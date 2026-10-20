@@ -6,8 +6,40 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatUsd, getProducts } from "@/lib/copper/catalog";
 
+// Alt text and a one-line caption for each lifestyle photo, keyed by file name.
+// The photo paths themselves come from the catalog.
+const LIFESTYLE_COPY: Record<
+  string,
+  { alt: string; caption: string; width: number; height: number }
+> = {
+  "copper-home-desert-light.png": {
+    alt: "Copper Home smart speaker on a stone counter beside a window with a desert sunset and saguaro cacti",
+    caption: "Copper Home keeps the house running while the desert sun sets.",
+    width: 1672,
+    height: 941,
+  },
+  "copper-notes-stone-desk.png": {
+    alt: "Copper Notes clip-on recorder standing on a stone desk next to its copper charging puck",
+    caption: "Copper Notes sits at home on your desk, ready for the next meeting.",
+    width: 1672,
+    height: 941,
+  },
+  "copper-notes-golden-hour.png": {
+    alt: "Man writing in a notebook with a Copper Notes recorder clipped to his shirt pocket in golden light",
+    caption: "Clip Copper Notes on and stay in the conversation.",
+    width: 1536,
+    height: 1024,
+  },
+};
+
 export default function Home() {
   const products = getProducts();
+  const showcaseItems = products.flatMap((product) =>
+    product.lifestyle.flatMap((src) => {
+      const copy = LIFESTYLE_COPY[src.split("/").pop() ?? ""];
+      return copy ? [{ src, productName: product.name, ...copy }] : [];
+    }),
+  );
 
   return (
     <>
@@ -100,6 +132,39 @@ export default function Home() {
                   </ul>
                 </CardContent>
               </Card>
+            ))}
+          </div>
+        </section>
+
+        <section
+          data-testid="showcase"
+          id="showcase"
+          className="bg-muted scroll-mt-16"
+        >
+          <div className="mx-auto flex max-w-5xl flex-col gap-12 px-4 py-12 md:py-20">
+            <h2 className="text-3xl font-bold tracking-tight">
+              Made for life in Arizona
+            </h2>
+            {showcaseItems.map((item, index) => (
+              <figure
+                key={item.src}
+                className="grid items-center gap-6 md:grid-cols-2"
+              >
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  width={item.width}
+                  height={item.height}
+                  sizes="(min-width: 768px) 480px, 100vw"
+                  className={`h-auto w-full rounded-xl ${index % 2 === 1 ? "md:order-2" : ""}`}
+                />
+                <figcaption className="flex flex-col gap-2">
+                  <span className="text-primary text-sm font-semibold">
+                    {item.productName}
+                  </span>
+                  <span className="text-xl">{item.caption}</span>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </section>
