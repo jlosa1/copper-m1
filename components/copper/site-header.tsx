@@ -19,7 +19,10 @@ export function SiteHeader() {
           <Logo className="w-32 sm:w-44" />
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
-          <nav aria-label="Main" className="flex items-center gap-3 text-sm sm:gap-5">
+          <nav
+            aria-label="Main"
+            className="flex items-center gap-3 text-sm sm:gap-5"
+          >
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}

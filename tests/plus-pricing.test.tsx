@@ -26,7 +26,8 @@ describe("Copper Plus pricing section", () => {
   it("follows the catalog when plan prices change", async () => {
     vi.resetModules();
     vi.doMock("@/lib/copper/catalog", async (importOriginal) => {
-      const actual = await importOriginal<typeof import("@/lib/copper/catalog")>();
+      const actual =
+        await importOriginal<typeof import("@/lib/copper/catalog")>();
       return {
         ...actual,
         getPlans: () =>
