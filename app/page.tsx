@@ -3,8 +3,14 @@ import { SiteFooter } from "@/components/copper/site-footer";
 import { SiteHeader } from "@/components/copper/site-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { formatUsd, getProducts } from "@/lib/copper/catalog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  formatMemory,
+  formatNotesHours,
+  formatUsd,
+  getPlans,
+  getProducts,
+} from "@/lib/copper/catalog";
 
 // Alt text and a one-line caption for each lifestyle photo, keyed by file name.
 // The photo paths themselves come from the catalog.
@@ -34,6 +40,7 @@ const LIFESTYLE_COPY: Record<
 
 export default function Home() {
   const products = getProducts();
+  const plans = getPlans();
   const showcaseItems = products.flatMap((product) =>
     product.lifestyle.flatMap((src) => {
       const copy = LIFESTYLE_COPY[src.split("/").pop() ?? ""];
@@ -166,6 +173,67 @@ export default function Home() {
                 </figcaption>
               </figure>
             ))}
+          </div>
+        </section>
+
+        <section
+          data-testid="plus-pricing"
+          id="plus"
+          className="mx-auto max-w-5xl scroll-mt-16 px-4 py-12 md:py-20"
+        >
+          <h2 className="mb-2 text-3xl font-bold tracking-tight">
+            Free or Copper Plus
+          </h2>
+          <p className="text-muted-foreground mb-8">
+            Compare what each plan includes.
+          </p>
+          <div className="grid gap-6 md:grid-cols-2">
+            {plans.map((plan) => {
+              const isPlus = plan.id === "copper-plus";
+              return (
+                <Card
+                  key={plan.id}
+                  data-testid="plan-card"
+                  data-plan={plan.id}
+                  className={isPlus ? "ring-primary pt-0 ring-2" : "pt-0"}
+                >
+                  <CardHeader
+                    className={
+                      isPlus
+                        ? "bg-primary text-primary-foreground py-4"
+                        : "py-4"
+                    }
+                  >
+                    <CardTitle className="text-xl">{plan.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <dl className="flex flex-col gap-4">
+                      {[
+                        ["Monthly", formatUsd(plan.monthlyUsd)],
+                        ["Annual", formatUsd(plan.annualUsd)],
+                        ["Memory kept", formatMemory(plan.memoryDays)],
+                        [
+                          "Copper Notes recording",
+                          formatNotesHours(plan.notesHoursPerMonth),
+                        ],
+                        [
+                          "Refined answers",
+                          plan.refinedAnswers ? "Included" : "Not included",
+                        ],
+                      ].map(([label, value]) => (
+                        <div
+                          key={label}
+                          className="flex items-baseline justify-between gap-4 border-b pb-3 last:border-b-0 last:pb-0"
+                        >
+                          <dt className="text-muted-foreground">{label}</dt>
+                          <dd className="text-right font-semibold">{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </section>
       </main>
