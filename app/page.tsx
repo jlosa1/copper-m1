@@ -9,6 +9,7 @@ import {
   formatNotesHours,
   formatUsd,
   getPlans,
+  getPrivacySummary,
   getProducts,
 } from "@/lib/copper/catalog";
 
@@ -26,7 +27,8 @@ const LIFESTYLE_COPY: Record<
   },
   "copper-notes-stone-desk.png": {
     alt: "Copper Notes clip-on recorder standing on a stone desk next to its copper charging puck",
-    caption: "Copper Notes sits at home on your desk, ready for the next meeting.",
+    caption:
+      "Copper Notes sits at home on your desk, ready for the next meeting.",
     width: 1672,
     height: 941,
   },
@@ -41,6 +43,7 @@ const LIFESTYLE_COPY: Record<
 export default function Home() {
   const products = getProducts();
   const plans = getPlans();
+  const privacy = getPrivacySummary();
   const showcaseItems = products.flatMap((product) =>
     product.lifestyle.flatMap((src) => {
       const copy = LIFESTYLE_COPY[src.split("/").pop() ?? ""];
@@ -234,6 +237,31 @@ export default function Home() {
                 </Card>
               );
             })}
+          </div>
+        </section>
+
+        <section
+          data-testid="privacy-summary"
+          id="privacy"
+          className="bg-accent text-accent-foreground scroll-mt-16"
+        >
+          <div className="mx-auto max-w-3xl px-4 py-12 md:py-20">
+            <h2 className="mb-2 text-3xl font-bold tracking-tight">
+              How Copper handles your data
+            </h2>
+            <p className="mb-8 text-lg">
+              Our {privacy.policy} privacy policy, in plain words.
+            </p>
+            <ul className="flex flex-col gap-4 text-lg">
+              {privacy.points.map((point) => (
+                <li
+                  key={point}
+                  className="border-accent-foreground/30 border-l-4 pl-4"
+                >
+                  {point}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       </main>
