@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { SiteFooter } from "@/components/copper/site-footer";
 import { SiteHeader } from "@/components/copper/site-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getProducts } from "@/lib/copper/catalog";
+import { Card, CardContent } from "@/components/ui/card";
+import { formatUsd, getProducts } from "@/lib/copper/catalog";
 
 export default function Home() {
   const products = getProducts();
@@ -42,6 +44,63 @@ export default function Home() {
                 />
               ))}
             </div>
+          </div>
+        </section>
+
+        <section
+          data-testid="products"
+          id="products"
+          className="mx-auto max-w-5xl scroll-mt-16 px-4 py-12 md:py-20"
+        >
+          <h2 className="mb-8 text-3xl font-bold tracking-tight">Products</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {products.map((product) => (
+              <Card
+                key={product.id}
+                data-testid="product-card"
+                data-product={product.id}
+              >
+                <CardContent className="flex flex-col gap-4">
+                  <div className="bg-secondary rounded-lg p-4">
+                    <Image
+                      src={product.cutout}
+                      alt={`${product.name} ${product.type} in ${product.colors[0]}`}
+                      width={1254}
+                      height={1254}
+                      sizes="(min-width: 768px) 400px, 90vw"
+                      className="mx-auto h-auto w-full max-w-xs"
+                    />
+                  </div>
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h3 className="text-xl font-semibold">{product.name}</h3>
+                    <p className="text-primary text-xl font-bold">
+                      {formatUsd(product.priceUsd)}
+                    </p>
+                  </div>
+                  <p className="text-muted-foreground">{product.type}</p>
+                  <ul className="flex flex-col gap-2">
+                    {product.features.slice(0, 3).map((feature) => (
+                      <li key={feature.name}>
+                        <span className="font-medium">{feature.name}.</span>{" "}
+                        <span className="text-muted-foreground">
+                          {feature.description}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <ul
+                    aria-label="Available colors"
+                    className="flex flex-wrap gap-2"
+                  >
+                    {product.colors.map((color) => (
+                      <li key={color}>
+                        <Badge variant="secondary">{color}</Badge>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </section>
       </main>
