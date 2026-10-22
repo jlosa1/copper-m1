@@ -1,9 +1,10 @@
 import Image from "next/image";
+import { PlanPicker } from "@/components/copper/plan-picker";
 import { SiteFooter } from "@/components/copper/site-footer";
 import { SiteHeader } from "@/components/copper/site-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   formatMemory,
   formatNotesHours,
@@ -190,54 +191,26 @@ export default function Home() {
           <p className="text-muted-foreground mb-8">
             Compare what each plan includes.
           </p>
-          <div className="grid gap-6 md:grid-cols-2">
-            {plans.map((plan) => {
-              const isPlus = plan.id === "copper-plus";
-              return (
-                <Card
-                  key={plan.id}
-                  data-testid="plan-card"
-                  data-plan={plan.id}
-                  className={isPlus ? "ring-primary pt-0 ring-2" : "pt-0"}
-                >
-                  <CardHeader
-                    className={
-                      isPlus
-                        ? "bg-primary text-primary-foreground py-4"
-                        : "py-4"
-                    }
-                  >
-                    <CardTitle className="text-xl">{plan.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <dl className="flex flex-col gap-4">
-                      {[
-                        ["Monthly", formatUsd(plan.monthlyUsd)],
-                        ["Annual", formatUsd(plan.annualUsd)],
-                        ["Memory kept", formatMemory(plan.memoryDays)],
-                        [
-                          "Copper Notes recording",
-                          formatNotesHours(plan.notesHoursPerMonth),
-                        ],
-                        [
-                          "Refined answers",
-                          plan.refinedAnswers ? "Included" : "Not included",
-                        ],
-                      ].map(([label, value]) => (
-                        <div
-                          key={label}
-                          className="flex items-baseline justify-between gap-4 border-b pb-3 last:border-b-0 last:pb-0"
-                        >
-                          <dt className="text-muted-foreground">{label}</dt>
-                          <dd className="text-right font-semibold">{value}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+          <PlanPicker
+            defaultPlanId="copper-plus"
+            plans={plans.map((plan) => ({
+              id: plan.id,
+              name: plan.name,
+              rows: [
+                ["Monthly", formatUsd(plan.monthlyUsd)],
+                ["Annual", formatUsd(plan.annualUsd)],
+                ["Memory kept", formatMemory(plan.memoryDays)],
+                [
+                  "Copper Notes recording",
+                  formatNotesHours(plan.notesHoursPerMonth),
+                ],
+                [
+                  "Refined answers",
+                  plan.refinedAnswers ? "Included" : "Not included",
+                ],
+              ],
+            }))}
+          />
         </section>
 
         <section

@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import Home from "@/app/page";
 
@@ -21,6 +21,32 @@ describe("Copper Plus pricing section", () => {
     expect(plus).toHaveTextContent("12 months");
     expect(plus).toHaveTextContent("Unlimited");
     expect(plus).toHaveTextContent("Included");
+  });
+
+  it("moves the border to the plan you select", () => {
+    render(<Home />);
+    const [free, plus] = screen.getAllByTestId("plan-card");
+    expect(plus.getAttribute("data-selected")).toBe("true");
+    expect(plus.className).toContain("ring-2");
+    expect(free.className).not.toContain("ring-2");
+
+    fireEvent.click(free);
+    expect(free.getAttribute("data-selected")).toBe("true");
+    expect(free.className).toContain("ring-2");
+    expect(plus.getAttribute("data-selected")).toBe("false");
+    expect(plus.className).not.toContain("ring-2");
+
+    fireEvent.click(plus);
+    expect(plus.className).toContain("ring-2");
+    expect(free.className).not.toContain("ring-2");
+  });
+
+  it("lets the arrow keys change the selected plan", () => {
+    render(<Home />);
+    const [free, plus] = screen.getAllByTestId("plan-card");
+    fireEvent.keyDown(plus, { key: "ArrowLeft" });
+    expect(free.getAttribute("aria-checked")).toBe("true");
+    expect(plus.getAttribute("aria-checked")).toBe("false");
   });
 
   it("follows the catalog when plan prices change", async () => {
